@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0" xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
+  xsi:type="MailApp">
+  <Id>5ac7579e-db75-4cad-a9db-367ec06b919e</Id>
+  <Version>1.0.0.0</Version>
+  <ProviderName>Step Out of the Line</ProviderName>
+  <DefaultLocale>nl-NL</DefaultLocale>
+  <DisplayName DefaultValue="SOTL Waakhond"/>
+  <Description DefaultValue="Waarschuwt bij Verzenden als een mail naar buiten geen #nummer of #info in het onderwerp heeft."/>
+  <IconUrl DefaultValue="https://4011richard.github.io/sotl-waakhond/assets/icon-64.png"/>
+  <HighResolutionIconUrl DefaultValue="https://4011richard.github.io/sotl-waakhond/assets/icon-128.png"/>
+  <SupportUrl DefaultValue="https://4011richard.github.io/sotl-waakhond/"/>
+  <AppDomains><AppDomain>https://4011richard.github.io</AppDomain></AppDomains>
+  <Hosts><Host Name="Mailbox"/></Hosts>
+  <Requirements><Sets><Set Name="Mailbox" MinVersion="1.1"/></Sets></Requirements>
+  <FormSettings>
+    <Form xsi:type="ItemRead"><DesktopSettings><SourceLocation DefaultValue="https://4011richard.github.io/sotl-waakhond/commands.html"/><RequestedHeight>250</RequestedHeight></DesktopSettings></Form>
+  </FormSettings>
+  <Permissions>ReadWriteItem</Permissions>
+  <Rule xsi:type="RuleCollection" Mode="Or"><Rule xsi:type="ItemIs" ItemType="Message" FormType="Read"/></Rule>
+  <DisableEntityHighlighting>false</DisableEntityHighlighting>
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides" xsi:type="VersionOverridesV1_0">
+    <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides/1.1" xsi:type="VersionOverridesV1_1">
+      <Requirements><bt:Sets DefaultMinVersion="1.12"><bt:Set Name="Mailbox"/></bt:Sets></Requirements>
+      <Hosts>
+        <Host xsi:type="MailHost">
+          <Runtimes>
+            <Runtime resid="WebViewRuntime.Url"><Override type="javascript" resid="JSRuntime.Url"/></Runtime>
+          </Runtimes>
+          <DesktopFormFactor>
+            <FunctionFile resid="WebViewRuntime.Url"/>
+            <ExtensionPoint xsi:type="LaunchEvent">
+              <LaunchEvents><LaunchEvent Type="OnMessageSend" FunctionName="onMessageSendHandler" SendMode="PromptUser"/></LaunchEvents>
+              <SourceLocation resid="WebViewRuntime.Url"/>
+            </ExtensionPoint>
+          </DesktopFormFactor>
+        </Host>
+      </Hosts>
+      <Resources>
+        <bt:Images>
+          <bt:Image id="Icon.16x16" DefaultValue="https://4011richard.github.io/sotl-waakhond/assets/icon-16.png"/>
+          <bt:Image id="Icon.32x32" DefaultValue="https://4011richard.github.io/sotl-waakhond/assets/icon-32.png"/>
+          <bt:Image id="Icon.80x80" DefaultValue="https://4011richard.github.io/sotl-waakhond/assets/icon-80.png"/>
+        </bt:Images>
+        <bt:Urls>
+          <bt:Url id="WebViewRuntime.Url" DefaultValue="https://4011richard.github.io/sotl-waakhond/commands.html"/>
+          <bt:Url id="JSRuntime.Url" DefaultValue="https://4011richard.github.io/sotl-waakhond/launchevent.js"/>
+        </bt:Urls>
+      </Resources>
+    </VersionOverrides>
+  </VersionOverrides>
+</OfficeApp>
