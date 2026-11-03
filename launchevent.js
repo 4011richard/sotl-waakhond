@@ -42,7 +42,8 @@ function onMessageSendHandler(event) {
     event.completed({
       allowEvent: false,
       errorMessage: "Geen #nummer gevonden. Mail naar buiten = #nummer van de Trello-kaart (bv. #1159) of #info " +
-        "(geen dossier). Klik 'Niet verzenden' en voeg het toe, of 'Toch verzenden'."
+        "(geen dossier). Klik 'Niet verzenden' en voeg het toe, of 'Toch verzenden'." +
+        " [test: gelezen onderwerp = '" + String(r[0] || "(leeg)").slice(0, 80) + "']"
     });
   }, function () { event.completed({ allowEvent: true }); });   // bij een fout nooit blokkeren
 }
