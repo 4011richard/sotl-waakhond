@@ -4,6 +4,7 @@ var INTERN = ["step-out.be", "3broers.onmicrosoft.com", "b-4.be", "leefbaarcomfo
 var CODES = ["#info"];          // uit brein/outlook/waakhond.md
 var VRIJ = [];                  // ontvangers (adres of @domein) die geen #nummer nodig hebben, uit waakhond.md
 var REF = /#\s?\d{2,5}(?!\d)/;
+var MAILBOXEN = ["richard@step-out.be", "kurt@step-out.be", "sales@step-out.be", "info@step-out.be"];   // enkel hier geldt de waakhond (11-11-2026)
 
 function eindigtOp(adres, dom) {
   return adres === dom || adres.slice(-(dom.length + 1)) === "@" + dom || adres.slice(-(dom.length + 1)) === "." + dom;
@@ -27,12 +28,15 @@ function lees(veld) {
     if (!item[veld]) return ok(leeg);
     var klaar = function (r) { ok(r.status === Office.AsyncResultStatus.Succeeded ? r.value : leeg); };
     if (veld === "body") item.body.getAsync(Office.CoercionType.Text, klaar);
+    else if (veld === "from") item.from.getAsync(function (r) { ok(r.status === Office.AsyncResultStatus.Succeeded && r.value ? r.value.emailAddress : ""); });
     else item[veld].getAsync(klaar);
   });
 }
 
 function onMessageSendHandler(event) {
-  Promise.all([lees("subject"), lees("to"), lees("cc"), lees("bcc"), lees("body")]).then(function (r) {
+  Promise.all([lees("subject"), lees("to"), lees("cc"), lees("bcc"), lees("body"), lees("from")]).then(function (r) {
+    var van = (r[5] || Office.context.mailbox.userProfile.emailAddress || "").toLowerCase();
+    if (MAILBOXEN.indexOf(van) < 0) return event.completed({ allowEvent: true });   // andere mailbox: geen waakhond
     var tekst = (r[4] || "").split(/\n(van|from|verzonden|sent|op .* schreef|on .* wrote)\s*:/i)[0];   // enkel eigen tekst, niet het citaat
     var onderwerp = ((r[0] || "") + " " + tekst).toLowerCase();
     if (REF.test(onderwerp)) return event.completed({ allowEvent: true });
