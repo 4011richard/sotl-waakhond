@@ -1,0 +1,45 @@
+<!doctype html><html><head><meta charset="utf-8"><script src="https://p.trellocdn.com/power-up.min.js"></script>
+<style>body{font:14px -apple-system,Segoe UI,sans-serif;margin:8px;color:#172b4d}textarea,select,input{width:100%;box-sizing:border-box;
+font:inherit;padding:6px;margin:4px 0 8px;border:1px solid #c1c7d0;border-radius:4px}textarea{height:110px}
+button{background:#0c66e4;color:#fff;border:0;border-radius:4px;padding:8px 12px;font:inherit;cursor:pointer;width:100%}
+button.grijs{background:#dfe1e6;color:#172b4d}.klein{font-size:12px;color:#626f86}#fout{color:#c9372c}</style></head><body>
+<div id="toestemming" style="display:none"><p>Eén keer toestemming geven, zodat de knop de reactie op <b>jouw naam</b> zet.</p>
+<button id="geef">Toestemming geven</button></div>
+<form id="f" style="display:none">
+<label>Wat is er afgesproken?</label><textarea id="wat" placeholder="bv. plaatsers komen maandag"></textarea>
+<button type="submit" id="ok">Op de kaart zetten</button><p class="klein">Zet op de kaart: <code id="voorbeeld"></code></p><p id="fout"></p></form>
+<script>
+var KEY = '13c067c4356eab18d17886a318679347', CODE = '#tel', SOORT = 'tel';
+var t = window.TrelloPowerUp.iframe({appKey: KEY, appName: 'SOOTLE knoppen'});
+var api = t.getRestApi();
+function $(i) { return document.getElementById(i); }
+function tekst() {
+  var d = [CODE];
+  if (SOORT === 'cm') {
+    var mb = $('mb').value; if (mb !== 'sales') d.push('vanuit ' + mb);
+    var a = $('adres').value.trim(); if (a) d.push(a);
+  }
+  var w = $('wat') ? $('wat').value.trim() : ''; if (w) d.push(w);
+  return d.join(' ');
+}
+function toon() { $('voorbeeld').textContent = tekst(); }
+api.isAuthorized().then(function (ja) { $(ja ? 'f' : 'toestemming').style.display = 'block'; toon(); });
+$('geef').onclick = function () {
+  api.authorize({scope: 'read,write', expiration: 'never'}).then(function () {
+    $('toestemming').style.display = 'none'; $('f').style.display = 'block'; toon(); });
+};
+$('f').oninput = toon;
+$('f').onsubmit = function (e) {
+  e.preventDefault();
+  if ((SOORT === 'cm') && !$('wat').value.trim()) { $('fout').textContent = 'Schrijf kort wat je wil zeggen.'; return; }
+  $('ok').disabled = true;
+  Promise.all([t.card('id'), api.getToken()]).then(function (r) {
+    var u = 'https://api.trello.com/1/cards/' + r[0].id + '/actions/comments?key=' + KEY + '&token=' + r[1] +
+            '&text=' + encodeURIComponent(tekst());
+    return fetch(u, {method: 'POST'});
+  }).then(function (res) {
+    if (!res.ok) throw new Error('Trello antwoordt ' + res.status);
+    return t.closePopup();
+  }).catch(function (err) { $('ok').disabled = false; $('fout').textContent = 'Niet gelukt: ' + err.message; });
+};
+</script></body></html>

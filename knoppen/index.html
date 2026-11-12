@@ -1,0 +1,24 @@
+<!doctype html><html><head><meta charset="utf-8"><script src="https://p.trellocdn.com/power-up.min.js"></script></head><body><script>
+var B = 'https://4011richard.github.io/sotl-waakhond/knoppen', P = 'https://sotl-server.taildca1c9.ts.net/planning', KNOPPEN = [{"soort": "cm", "tekst": "✉️ Conceptmail", "titel": "Conceptmail laten schrijven", "waar": "gate"}, {"soort": "tel", "tekst": "📞 Gebeld", "titel": "Telefonisch geantwoord", "waar": "alle"}, {"soort": "wa", "tekst": "💬 WhatsApp", "titel": "Via WhatsApp geantwoord", "waar": "alle"}, {"soort": "mgan", "tekst": "🗣️ Mondeling", "titel": "Mondeling / geen mail nodig", "waar": "alle"}, {"soort": "comok", "tekst": "✅ Com klaar", "titel": "Communicatie afgehandeld", "waar": "com"}], GATE = '6928672a33d96bdfb3fbb181', BORDEN = ["6928672a33d96bdfb3fbb181", "6abe31bd85a3ac02bc12129c"], KEY = '13c067c4356eab18d17886a318679347';
+var opties = KEY ? {appKey: KEY, appName: 'SOOTLE knoppen'} : {};
+window.TrelloPowerUp.initialize({
+  'board-buttons': function (t) {
+    return [{icon: {dark: B + '/icoon.svg', light: B + '/icoon.svg'}, text: 'Planning',
+             callback: function (t) { return t.modal({url: P + '/', fullscreen: true, title: 'Weekplanning Step Out'}); }}];
+  },
+  'card-buttons': function (t) {
+    if (!KEY) return [];
+    return Promise.all([t.card('name'), t.board('id')]).then(function (r) {
+      var naam = r[0].name || '', bord = r[1].id, com = /^\s*com\s*#/i.test(naam);
+      if (BORDEN.indexOf(bord) < 0) return [];
+      return KNOPPEN.filter(function (k) {
+        return k.waar === 'alle' || (k.waar === 'gate' && bord === GATE) || (k.waar === 'com' && com && bord === GATE);
+      }).map(function (k) {
+        return {text: k.tekst, callback: function (t) {
+          return t.popup({title: k.titel, url: B + '/knop-' + k.soort + '.html', height: k.soort === 'cm' ? 330 : 230});
+        }};
+      });
+    });
+  }
+}, opties);
+</script></body></html>
