@@ -14,7 +14,7 @@ window.TrelloPowerUp.initialize({
       return KNOPPEN.filter(function (k) {
         return k.waar === 'alle' || (k.waar === 'gate' && bord === GATE) || (k.waar === 'com' && com && bord === GATE);
       }).map(function (k) {
-        return {text: k.tekst, callback: function (t) {
+        return {icon: B + '/icoon.svg', text: k.tekst, condition: 'edit', callback: function (t) {
           return t.popup({title: k.titel, url: B + '/knop-' + k.soort + '.html', height: k.soort === 'cm' ? 330 : 230});
         }};
       });
