@@ -1,0 +1,20 @@
+<!doctype html><html><head><meta charset="utf-8"><script src="https://p.trellocdn.com/power-up.min.js"></script>
+<style>body{margin:0;font:14px -apple-system,Segoe UI,sans-serif}#r{display:flex;flex-wrap:wrap;gap:6px;padding:2px}
+button{background:#091e420f;border:0;border-radius:4px;padding:6px 10px;font:inherit;color:#172b4d;cursor:pointer}
+button:hover{background:#091e4224}</style></head><body><div id="r"></div><script>
+var B = 'https://4011richard.github.io/sotl-waakhond/knoppen', KNOPPEN = [{"soort": "cm", "tekst": "✉️ Conceptmail", "titel": "Conceptmail laten schrijven", "waar": "gate"}, {"soort": "tel", "tekst": "📞 Gebeld", "titel": "Telefonisch geantwoord", "waar": "alle"}, {"soort": "wa", "tekst": "💬 WhatsApp", "titel": "Via WhatsApp geantwoord", "waar": "alle"}, {"soort": "mgan", "tekst": "🗣️ Mondeling", "titel": "Mondeling / geen mail nodig", "waar": "alle"}, {"soort": "comok", "tekst": "✅ Com klaar", "titel": "Communicatie afgehandeld", "waar": "com"}], GATE = '6928672a33d96bdfb3fbb181';
+var t = window.TrelloPowerUp.iframe();
+Promise.all([t.card('name'), t.board('id')]).then(function (r) {
+  var naam = r[0].name || '', bord = r[1].id, com = /^\s*com\s*#/i.test(naam);
+  KNOPPEN.filter(function (k) {
+    return k.waar === 'alle' || (k.waar === 'gate' && bord === GATE) || (k.waar === 'com' && com && bord === GATE);
+  }).forEach(function (k) {
+    var b = document.createElement('button'); b.textContent = k.tekst;
+    b.onclick = function (e) {
+      t.popup({title: k.titel, url: B + '/knop-' + k.soort + '.html', height: k.soort === 'cm' ? 330 : 230, mouseEvent: e});
+    };
+    document.getElementById('r').appendChild(b);
+  });
+  t.sizeTo(document.body);
+});
+</script></body></html>

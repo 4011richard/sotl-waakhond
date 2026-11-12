@@ -6,6 +6,12 @@ window.TrelloPowerUp.initialize({
     return [{icon: {dark: B + '/icoon.svg', light: B + '/icoon.svg'}, text: 'Planning',
              callback: function (t) { return t.modal({url: P + '/', fullscreen: true, title: 'Weekplanning Step Out'}); }}];
   },
+  'card-back-section': function (t) {
+    return t.board('id').then(function (b) {
+      if (BORDEN.indexOf(b.id) < 0) return null;
+      return {title: 'SOOTLE', icon: B + '/icoon.svg', content: {type: 'iframe', url: t.signUrl(B + '/blok.html'), height: 44}};
+    });
+  },
   'card-buttons': function (t) {
     if (!KEY) return [];
     return Promise.all([t.card('name'), t.board('id')]).then(function (r) {
