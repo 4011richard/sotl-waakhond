@@ -7,24 +7,15 @@ window.TrelloPowerUp.initialize({
              callback: function (t) { return t.modal({url: P + '/', fullscreen: true, title: 'Weekplanning Step Out'}); }}];
   },
   'card-back-section': function (t) {
-    return t.board('id').then(function (b) {
-      if (BORDEN.indexOf(b.id) < 0) return null;
-      return {title: 'SOOTLE', icon: B + '/icoon.svg', content: {type: 'iframe', url: t.signUrl(B + '/blok.html'), height: 44}};
-    });
+    return {title: 'SOOTLE', icon: B + '/icoon.svg', content: {type: 'iframe', url: t.signUrl(B + '/blok.html'), height: 44}};
   },
   'card-buttons': function (t) {
-    if (!KEY) return [];
-    return Promise.all([t.card('name'), t.board('id')]).then(function (r) {
-      var naam = r[0].name || '', bord = r[1].id, com = /^\s*com\s*#/i.test(naam);
-      if (BORDEN.indexOf(bord) < 0) return [];
-      return KNOPPEN.filter(function (k) {
-        return k.waar === 'alle' || (k.waar === 'gate' && bord === GATE) || (k.waar === 'com' && com && bord === GATE);
-      }).map(function (k) {
-        return {icon: B + '/icoon.svg', text: k.tekst, condition: 'edit', callback: function (t) {
-          return t.popup({title: k.titel, url: B + '/knop-' + k.soort + '.html', height: k.soort === 'cm' ? 330 : 230});
-        }};
-      });
+    return KNOPPEN.filter(function (k) { return k.waar !== 'com'; }).map(function (k) {
+      return {icon: B + '/icoon.svg', text: k.tekst, callback: function (t) {
+        return t.popup({title: k.titel, url: B + '/knop-' + k.soort + '.html', height: k.soort === 'cm' ? 330 : 230});
+      }};
     });
-  }
+  },
+  'authorization-status': function (t) { return {authorized: true}; }
 });
 </script></body></html>
