@@ -2,7 +2,7 @@
 var B = 'https://4011richard.github.io/sotl-waakhond/knoppen', P = 'https://sotl-server.taildca1c9.ts.net/planning', KNOPPEN = [{"soort": "cm", "tekst": "✉️ Conceptmail", "titel": "Conceptmail laten schrijven", "waar": "alle"}, {"soort": "cmx", "tekst": "🗑️ Concept annuleren", "titel": "Conceptmail annuleren", "waar": "alle"}, {"soort": "tel", "tekst": "📞 Gebeld", "titel": "Telefonisch geantwoord", "waar": "alle"}, {"soort": "wa", "tekst": "💬 WhatsApp", "titel": "Via WhatsApp geantwoord", "waar": "alle"}, {"soort": "mgan", "tekst": "🗣️ Mondeling", "titel": "Mondeling / geen mail nodig", "waar": "alle"}, {"soort": "comok", "tekst": "✅ Com klaar", "titel": "Communicatie afgehandeld", "waar": "com"}, {"soort": "off", "tekst": "📄 Offerte", "titel": "Concept-offerte maken", "waar": "alle"}, {"soort": "fac", "tekst": "🧾 Factuur", "titel": "Conceptfactuur maken", "waar": "alle"}, {"soort": "pro", "tekst": "🛒 Probo", "titel": "Concept-offerte uit Probo-winkelwagen", "waar": "alle"}], GATE = '6928672a33d96bdfb3fbb181', BORDEN = ["6928672a33d96bdfb3fbb181", "6abe31bd85a3ac02bc12129c"], KEY = '13c067c4356eab18d17886a318679347';
 var VERBODEN = ['6abfa9ae1ee43b86d21d1a80','6acbbb09a37c75495324a55b','6abe33ba549cdc9d741d6046','6aca0d27bfabdfa48a8d938e'], WAARSCHUW = ['5295bab479a4b445040018b6','528f3c60ed006550750010eb'];  // 19-11 Richard: Kurt niets op Studio + freelancers
 function verboden(t) { var c = t.getContext(); return VERBODEN.indexOf(c.board) >= 0 ? (WAARSCHUW.indexOf(c.member) >= 0 ? 'stop' : 'stil') : ''; }
-function stopVenster(t) { return t.modal({url: B + '/verboden.html', title: 'STOP', height: 330}); }
+function stopVenster(t) { return t.modal({url: B + '/verboden.html', title: 'STOP', height: 560}); }
 var opties = KEY ? {appKey: KEY, appName: 'SOOTLE knoppen'} : {};
 window.TrelloPowerUp.initialize({
   'board-buttons': function (t) {
@@ -11,7 +11,7 @@ window.TrelloPowerUp.initialize({
              callback: function (t) { return t.modal({url: P + '/', fullscreen: true, title: 'Weekplanning Step Out'}); }}];
   },
   'card-back-section': function (t) {
-    var v = verboden(t); if (v) return v === 'stop' ? {title: '☝️🚫 STOP', icon: B + '/icoon.svg', content: {type: 'iframe', url: t.signUrl(B + '/verboden.html'), height: 230}} : undefined;
+    var v = verboden(t); if (v) return v === 'stop' ? {title: '☝️🚫 STOP', icon: B + '/icoon.svg', content: {type: 'iframe', url: t.signUrl(B + '/verboden.html'), height: 420}} : undefined;
     return {title: 'SOOTLE', icon: B + '/icoon.svg', content: {type: 'iframe', url: t.signUrl(B + '/blok.html'), height: 44}};
   },
   'card-buttons': function (t) {
