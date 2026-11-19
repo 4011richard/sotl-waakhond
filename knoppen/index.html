@@ -8,7 +8,7 @@ window.TrelloPowerUp.initialize({
   'board-buttons': function (t) {
     var v = verboden(t); if (v) return v === 'stop' ? [{text: '☝️🚫 Hier niets invullen!!!', callback: stopVenster}] : [];
     return [{icon: {dark: B + '/icoon.svg', light: B + '/icoon.svg'}, text: 'Planning',
-             callback: function (t) { return t.modal({url: P + '/', fullscreen: true, title: 'Weekplanning Step Out'}); }}];
+             callback: function (t) { var b = t.getContext().board; return t.modal({url: P + '/?bord=' + (b === GATE ? 'gate' : b === '6abe31bd85a3ac02bc12129c' ? 'basecamp' : 'beide'), fullscreen: true, title: 'Weekplanning Step Out'}); }}];
   },
   'card-back-section': function (t) {
     var v = verboden(t); if (v) return v === 'stop' ? {title: '☝️🚫 STOP', icon: B + '/icoon.svg', content: {type: 'iframe', url: t.signUrl(B + '/verboden.html'), height: 420}} : undefined;
