@@ -14,7 +14,7 @@ var t = window.TrelloPowerUp.iframe({appKey: KEY, appName: 'SOOTLE knoppen'});
 var api = t.getRestApi();
 function $(i) { return document.getElementById(i); }
 function tekst() {
-  var d = [CODE];
+  var d = [String.fromCharCode(92) + CODE];   // 19-11: \#code, anders maakt Trello er een grote titel van
   if (SOORT === 'cm') {
     var mb = $('mb').value; if (mb !== 'sales') d.push('vanuit ' + mb);
     var a = $('adres').value.trim(); if (a) d.push(a);
