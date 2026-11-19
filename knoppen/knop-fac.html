@@ -6,7 +6,8 @@ button.grijs{background:#dfe1e6;color:#172b4d}.klein{font-size:12px;color:#626f8
 <div id="toestemming" style="display:none"><p>Eén keer toestemming geven, zodat de knop de reactie op <b>jouw naam</b> zet.</p>
 <button id="geef">Toestemming geven</button></div>
 <form id="f" style="display:none">
-
+<label>Richtlijnen voor de factuur (mag leeg)</label><textarea id="wat" style="height:200px"
+placeholder="bv. plaatsing niet aanrekenen / enkel 2 van de 3 panelen / 5% korting / extra regel verplaatsing 45 euro"></textarea>
 <button type="submit" id="ok">🧾 Maak conceptfactuur</button><p class="klein">Zet op de kaart: <code id="voorbeeld"></code></p><p id="fout"></p></form>
 <script>
 var KEY = '13c067c4356eab18d17886a318679347', CODE = '#factuur', SOORT = 'fac';

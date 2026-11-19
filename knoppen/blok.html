@@ -11,7 +11,7 @@ Promise.all([t.card('name'), t.board('id')]).then(function (r) {
   }).forEach(function (k) {
     var b = document.createElement('button'); b.textContent = k.tekst;
     b.onclick = function (e) {
-      t.popup({title: k.titel, url: B + '/knop-' + k.soort + '.html', height: k.soort === 'cm' ? 330 : 230, mouseEvent: e});
+      t.popup({title: k.titel, url: B + '/knop-' + k.soort + '.html', height: (k.soort === 'cm' ? 330 : (k.soort === 'fac' ? 360 : 230)), mouseEvent: e});
     };
     document.getElementById('r').appendChild(b);
   });
