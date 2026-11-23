@@ -1,9 +1,38 @@
 <!doctype html><html><head><meta charset="utf-8"><script src="https://p.trellocdn.com/power-up.min.js"></script>
 <style>body{margin:0;font:14px -apple-system,Segoe UI,sans-serif}#r{display:flex;flex-wrap:wrap;gap:6px;padding:2px}
 button{background:#091e420f;border:0;border-radius:4px;padding:6px 10px;font:inherit;color:#172b4d;cursor:pointer}
-button:hover{background:#091e4224}</style></head><body><div id="r"></div><script>
+button:hover{background:#091e4224}#w{display:none;flex-wrap:wrap;gap:6px;align-items:center;padding:2px 2px 6px;font-weight:600;color:#172b4d}
+#w a{background:#e9f2ff;color:#0c66e4;border-radius:4px;padding:5px 10px;text-decoration:none}#w a:hover{background:#cce0ff}</style></head><body><div id="w"></div><div id="r"></div><script>
 var B = 'https://4011richard.github.io/sotl-waakhond/knoppen', KNOPPEN = [{"soort": "cm", "tekst": "✉️ Conceptmail", "titel": "Conceptmail laten schrijven", "waar": "alle"}, {"soort": "cmx", "tekst": "🗑️ Concept annuleren", "titel": "Conceptmail annuleren", "waar": "alle"}, {"soort": "comok", "tekst": "✅ Com klaar", "titel": "Communicatie afgehandeld", "waar": "com"}, {"soort": "off", "tekst": "📄 Offerte", "titel": "Concept-offerte maken", "waar": "alle"}, {"soort": "fac", "tekst": "🧾 Factuur", "titel": "Conceptfactuur maken", "waar": "alle"}, {"soort": "pro", "tekst": "🛒 Probo", "titel": "Concept-offerte uit Probo-winkelwagen", "waar": "alle"}, {"soort": "nv", "tekst": "✂️ Nieuwe vraag", "titel": "Andere vraag: nieuwe kaart maken", "waar": "alle"}], GATE = '6928672a33d96bdfb3fbb181';
-var t = window.TrelloPowerUp.iframe();
+var KEY = '13c067c4356eab18d17886a318679347';
+var t = window.TrelloPowerUp.iframe({appKey: KEY, appName: 'SOOTLE knoppen'});
+// 23-11 Richard: offerte-/factuurlinks altijd op dezelfde plaats (bovenaan de SOOTLE-balk), niet zoeken in de reacties
+function wefact() {
+  var api = t.getRestApi();
+  return api.isAuthorized().then(function (ja) {
+    if (!ja) return;
+    return Promise.all([t.card('id'), api.getToken()]).then(function (r) {
+      return fetch('https://api.trello.com/1/cards/' + r[0].id + '/actions?filter=commentCard&limit=300&fields=data,date&key=' + KEY + '&token=' + r[1]);
+    }).then(function (res) { return res.ok ? res.json() : []; }).then(function (acties) {
+      var gezien = {}, links = [], rx = /\[([^\]]+)\]\((https:\/\/www\.mijnwefact\.nl\/(offertes|facturen)\/bekijken\/\d+)\)/g, m;
+      acties.forEach(function (a) {                      // nieuwste eerst
+        var tx = (a.data && a.data.text) || '';
+        while ((m = rx.exec(tx))) {
+          if (gezien[m[2]]) continue; gezien[m[2]] = 1;
+          links.push({code: m[1].replace(/\*/g, ''), url: m[2], soort: m[3]});
+        }
+      });
+      if (!links.length) return;
+      var w = document.getElementById('w');
+      links.sort(function (a, b) { return a.soort === b.soort ? 0 : (a.soort === 'offertes' ? -1 : 1); });
+      links.forEach(function (l) {
+        var a = document.createElement('a'); a.href = l.url; a.target = '_blank'; a.rel = 'noopener';
+        a.textContent = (l.soort === 'offertes' ? '📄 ' : '🧾 ') + l.code + ' ↗'; w.appendChild(a);
+      });
+      w.style.display = 'flex';
+    });
+  }).catch(function () {});
+}
 Promise.all([t.card('name'), t.board('id')]).then(function (r) {
   var naam = r[0].name || '', bord = r[1].id, com = /^\s*com\s*#/i.test(naam);
   KNOPPEN.filter(function (k) {
@@ -16,5 +45,6 @@ Promise.all([t.card('name'), t.board('id')]).then(function (r) {
     document.getElementById('r').appendChild(b);
   });
   t.sizeTo(document.body);
-});
+  return wefact();
+}).then(function () { t.sizeTo(document.body); });
 </script></body></html>
