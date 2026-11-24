@@ -43,7 +43,7 @@ Promise.all([t.card('name'), t.board('id')]).then(function (r) {
   }).forEach(function (k) {
     var b = document.createElement('button'); b.textContent = k.tekst;
     b.onclick = function (e) {
-      t.popup({title: k.titel, url: B + '/knop-' + k.soort + '.html?v=1795534497', height: (k.soort === 'cm' ? 370 : (k.soort === 'fac' || k.soort === 'off' ? 360 : 230)), mouseEvent: e});
+      t.popup({title: k.titel, url: B + '/knop-' + k.soort + '.html?v=1795535322', height: (k.soort === 'cm' ? 370 : (k.soort === 'fac' || k.soort === 'off' ? 360 : 230)), mouseEvent: e});
     };
     document.getElementById('r').appendChild(b);
   });

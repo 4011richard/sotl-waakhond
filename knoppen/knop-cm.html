@@ -6,7 +6,7 @@ button.grijs{background:#dfe1e6;color:#172b4d}.klein{font-size:12px;color:#626f8
 <div id="toestemming" style="display:none"><p>Eén keer toestemming geven, zodat de knop de reactie op <b>jouw naam</b> zet.</p>
 <button id="geef">Toestemming geven</button></div>
 <form id="f" style="display:none">
-<label>Wat wil je zeggen? (kort, Claude maakt er een mooie mail van)</label><textarea id="wat"
+<label>Wat wil je zeggen? (mag leeg: dan stelt Claude zelf een mail voor)</label><textarea id="wat"
 placeholder="bv. tel gehad / hij stuurt nog een vectorieel logo / daarna plannen we"></textarea>
 <label>Vanuit mailbox</label><select id="mb"><option value="sales">sales@ (klanten)</option><option value="kurt">kurt@</option>
 <option value="richard">richard@</option><option value="info">info@</option></select>
@@ -38,7 +38,6 @@ $('geef').onclick = function () {
 $('f').oninput = toon;
 $('f').onsubmit = function (e) {
   e.preventDefault();
-  if ((SOORT === 'cm') && !$('wat').value.trim()) { $('fout').textContent = 'Schrijf kort wat je wil zeggen.'; t.sizeTo(document.body); return; }
   $('ok').disabled = true;
   Promise.all([t.card('id'), api.getToken()]).then(function (r) {
     var u = 'https://api.trello.com/1/cards/' + r[0].id + '/actions/comments?key=' + KEY + '&token=' + r[1] +
