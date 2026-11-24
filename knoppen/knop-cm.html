@@ -11,6 +11,7 @@ placeholder="bv. tel gehad / hij stuurt nog een vectorieel logo / daarna plannen
 <label>Vanuit mailbox</label><select id="mb"><option value="sales">sales@ (klanten)</option><option value="kurt">kurt@</option>
 <option value="richard">richard@</option><option value="info">info@</option></select>
 <label>Ander adres? (leeg = antwoord op de laatste mail van de klant)</label><input id="adres" placeholder="naam@bedrijf.be">
+<label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="offpdf" style="width:auto;margin:0"> 📎 Offerte van deze kaart (PDF) meesturen</label>
 <button type="submit" id="ok">✍️ Maak concept</button><p class="klein">Zet op de kaart: <code id="voorbeeld"></code></p><p id="fout"></p></form>
 <script>
 var KEY = '13c067c4356eab18d17886a318679347', CODE = '#cm', SOORT = 'cm';
@@ -22,6 +23,7 @@ function tekst() {
   if (SOORT === 'cm') {
     var mb = $('mb').value; if (mb !== 'sales') d.push('vanuit ' + mb);
     var a = $('adres').value.trim(); if (a) d.push(a);
+    if ($('offpdf') && $('offpdf').checked) d.push('+offerte');
   }
   var w = $('wat') ? $('wat').value.trim() : ''; if (w) d.push(w);
   return d.join(' ');
