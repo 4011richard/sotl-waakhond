@@ -7,7 +7,8 @@ button.grijs{background:#dfe1e6;color:#172b4d}.klein{font-size:12px;color:#626f8
 <button id="geef">Toestemming geven</button></div>
 <form id="f" style="display:none">
 <label>Wat is er afgesproken?</label><textarea id="wat" placeholder="bv. Olivier is op de hoogte"></textarea>
-<button type="submit" id="ok">Op de kaart zetten</button><p class="klein">Zet op de kaart: <code id="voorbeeld"></code></p><p id="fout"></p></form>
+<p id="fout"></p>
+<button type="submit" id="ok">Op de kaart zetten</button><p class="klein">Zet op de kaart: <code id="voorbeeld"></code></p></form>
 <script>
 var KEY = '13c067c4356eab18d17886a318679347', CODE = '#wa', SOORT = 'wa';
 var t = window.TrelloPowerUp.iframe({appKey: KEY, appName: 'SOOTLE knoppen'});
@@ -23,7 +24,7 @@ function tekst() {
   return d.join(' ');
 }
 function toon() { $('voorbeeld').textContent = tekst(); }
-api.isAuthorized().then(function (ja) { $(ja ? 'f' : 'toestemming').style.display = 'block'; toon(); });
+api.isAuthorized().then(function (ja) { $(ja ? 'f' : 'toestemming').style.display = 'block'; toon(); t.sizeTo(document.body); });
 $('geef').onclick = function () {
   api.authorize({scope: 'read,write', expiration: 'never'}).then(function () {
     $('toestemming').style.display = 'none'; $('f').style.display = 'block'; toon(); });
@@ -31,7 +32,7 @@ $('geef').onclick = function () {
 $('f').oninput = toon;
 $('f').onsubmit = function (e) {
   e.preventDefault();
-  if ((SOORT === 'cm') && !$('wat').value.trim()) { $('fout').textContent = 'Schrijf kort wat je wil zeggen.'; return; }
+  if ((SOORT === 'cm') && !$('wat').value.trim()) { $('fout').textContent = 'Schrijf kort wat je wil zeggen.'; t.sizeTo(document.body); return; }
   $('ok').disabled = true;
   Promise.all([t.card('id'), api.getToken()]).then(function (r) {
     var u = 'https://api.trello.com/1/cards/' + r[0].id + '/actions/comments?key=' + KEY + '&token=' + r[1] +
@@ -40,6 +41,6 @@ $('f').onsubmit = function (e) {
   }).then(function (res) {
     if (!res.ok) throw new Error('Trello antwoordt ' + res.status);
     return t.closePopup();
-  }).catch(function (err) { $('ok').disabled = false; $('fout').textContent = 'Niet gelukt: ' + err.message; });
+  }).catch(function (err) { $('ok').disabled = false; $('fout').textContent = 'Niet gelukt: ' + err.message; t.sizeTo(document.body); });
 };
 </script></body></html>

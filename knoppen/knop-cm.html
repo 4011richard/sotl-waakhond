@@ -12,7 +12,8 @@ placeholder="bv. tel gehad / hij stuurt nog een vectorieel logo / daarna plannen
 <option value="richard">richard@</option><option value="info">info@</option></select>
 <label>Ander adres? (leeg = antwoord op de laatste mail van de klant)</label><input id="adres" placeholder="naam@bedrijf.be">
 <label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="offpdf" style="width:auto;margin:0"> 📎 Offerte van deze kaart (PDF) meesturen</label>
-<button type="submit" id="ok">✍️ Maak concept</button><p class="klein">Zet op de kaart: <code id="voorbeeld"></code></p><p id="fout"></p></form>
+<p id="fout"></p>
+<button type="submit" id="ok">✍️ Maak concept</button><p class="klein">Zet op de kaart: <code id="voorbeeld"></code></p></form>
 <script>
 var KEY = '13c067c4356eab18d17886a318679347', CODE = '#cm', SOORT = 'cm';
 var t = window.TrelloPowerUp.iframe({appKey: KEY, appName: 'SOOTLE knoppen'});
@@ -29,7 +30,7 @@ function tekst() {
   return d.join(' ');
 }
 function toon() { $('voorbeeld').textContent = tekst(); }
-api.isAuthorized().then(function (ja) { $(ja ? 'f' : 'toestemming').style.display = 'block'; toon(); });
+api.isAuthorized().then(function (ja) { $(ja ? 'f' : 'toestemming').style.display = 'block'; toon(); t.sizeTo(document.body); });
 $('geef').onclick = function () {
   api.authorize({scope: 'read,write', expiration: 'never'}).then(function () {
     $('toestemming').style.display = 'none'; $('f').style.display = 'block'; toon(); });
@@ -37,7 +38,7 @@ $('geef').onclick = function () {
 $('f').oninput = toon;
 $('f').onsubmit = function (e) {
   e.preventDefault();
-  if ((SOORT === 'cm') && !$('wat').value.trim()) { $('fout').textContent = 'Schrijf kort wat je wil zeggen.'; return; }
+  if ((SOORT === 'cm') && !$('wat').value.trim()) { $('fout').textContent = 'Schrijf kort wat je wil zeggen.'; t.sizeTo(document.body); return; }
   $('ok').disabled = true;
   Promise.all([t.card('id'), api.getToken()]).then(function (r) {
     var u = 'https://api.trello.com/1/cards/' + r[0].id + '/actions/comments?key=' + KEY + '&token=' + r[1] +
@@ -46,6 +47,6 @@ $('f').onsubmit = function (e) {
   }).then(function (res) {
     if (!res.ok) throw new Error('Trello antwoordt ' + res.status);
     return t.closePopup();
-  }).catch(function (err) { $('ok').disabled = false; $('fout').textContent = 'Niet gelukt: ' + err.message; });
+  }).catch(function (err) { $('ok').disabled = false; $('fout').textContent = 'Niet gelukt: ' + err.message; t.sizeTo(document.body); });
 };
 </script></body></html>
