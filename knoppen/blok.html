@@ -7,6 +7,7 @@ var B = 'https://4011richard.github.io/sotl-waakhond/knoppen', KNOPPEN = [{"soor
 var KEY = '13c067c4356eab18d17886a318679347';
 var t = window.TrelloPowerUp.iframe({appKey: KEY, appName: 'SOOTLE knoppen'});
 // 23-11 Richard: offerte-/factuurlinks altijd op dezelfde plaats (bovenaan de SOOTLE-balk), niet zoeken in de reacties
+var getoond = {};   // 24-11 Richard: link verscheen pas na herladen -> balk kijkt elke 15 s opnieuw zolang de kaart open is
 function wefact() {
   var api = t.getRestApi();
   return api.isAuthorized().then(function (ja) {
@@ -18,7 +19,7 @@ function wefact() {
       acties.forEach(function (a) {                      // nieuwste eerst
         var tx = (a.data && a.data.text) || '';
         while ((m = rx.exec(tx))) {
-          if (gezien[m[2]]) continue; gezien[m[2]] = 1;
+          if (gezien[m[2]] || getoond[m[2]]) continue; gezien[m[2]] = 1;
           links.push({code: m[1].replace(/\*/g, ''), url: m[2], soort: m[3]});
         }
       });
@@ -26,10 +27,12 @@ function wefact() {
       var w = document.getElementById('w');
       links.sort(function (a, b) { return a.soort === b.soort ? 0 : (a.soort === 'offertes' ? -1 : 1); });
       links.forEach(function (l) {
+        getoond[l.url] = 1;
         var a = document.createElement('a'); a.href = l.url; a.target = '_blank'; a.rel = 'noopener';
         a.textContent = (l.soort === 'offertes' ? '📄 ' : '🧾 ') + l.code + ' ↗'; w.appendChild(a);
       });
       w.style.display = 'flex';
+      t.sizeTo(document.body);
     });
   }).catch(function () {});
 }
@@ -46,5 +49,8 @@ Promise.all([t.card('name'), t.board('id')]).then(function (r) {
   });
   t.sizeTo(document.body);
   return wefact();
-}).then(function () { t.sizeTo(document.body); });
+}).then(function () {
+  t.sizeTo(document.body);
+  setInterval(function () { if (!document.hidden) wefact(); }, 15000);
+});
 </script></body></html>
